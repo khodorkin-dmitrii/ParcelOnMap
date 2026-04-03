@@ -1,4 +1,4 @@
-package com.yavin.myapplication.ui.map
+package com.yavin.myapplication.ui.parcel.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,16 +9,19 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.yavin.myapplication.data.model.Parcel
+import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
 
 @Composable
-fun GoogleMapView(
-    parcel: Parcel,
+fun ParcelRouteMap(
+    points: List<ParcelMapPointUiModel>,
     modifier: Modifier = Modifier
 ) {
-    val routePoints = parcel.routePoints.sortedBy { it.timestamp }
-    val firstPoint = routePoints.first()
-    val coordinates = routePoints.map { LatLng(it.latitude, it.longitude) }
+    if (points.isEmpty()) {
+        return
+    }
+
+    val firstPoint = points.first()
+    val coordinates = points.map { LatLng(it.latitude, it.longitude) }
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             LatLng(firstPoint.latitude, firstPoint.longitude),
@@ -30,12 +33,11 @@ fun GoogleMapView(
         modifier = modifier,
         cameraPositionState = cameraPositionState
     ) {
-        coordinates.forEachIndexed { index, coordinate ->
-            val routePoint = routePoints[index]
+        points.forEachIndexed { index, point ->
             Marker(
-                state = MarkerState(position = coordinate),
-                title = routePoint.cityName,
-                snippet = routePoint.timestamp.toString()
+                state = MarkerState(position = coordinates[index]),
+                title = point.title,
+                snippet = point.timeLabel
             )
         }
 

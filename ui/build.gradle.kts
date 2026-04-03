@@ -22,8 +22,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":data"))
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.androidx.compose.bom))
@@ -38,4 +36,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)
 }
+
 
