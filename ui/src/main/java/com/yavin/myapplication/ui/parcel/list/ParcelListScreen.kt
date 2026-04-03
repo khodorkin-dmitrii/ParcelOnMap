@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.model.ParcelListItemUiModel
 import com.yavin.myapplication.ui.model.ParcelListUiState
+import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,3 +93,39 @@ private fun ParcelListItem(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ParcelListScreenPreview() {
+    ParcelOnMapTheme {
+        ParcelListScreen(
+            state = ParcelListUiState(
+                parcels = listOf(
+                    ParcelListItemUiModel(
+                        id = "parcel-1",
+                        trackingNumber = "POM-001",
+                        status = "In transit",
+                        lastCity = "Vienna",
+                        lastUpdatedText = "03 Apr 18:40"
+                    ),
+                    ParcelListItemUiModel(
+                        id = "parcel-2",
+                        trackingNumber = "POM-002",
+                        status = "Sorting center",
+                        lastCity = "Brno",
+                        lastUpdatedText = "03 Apr 14:15"
+                    ),
+                    ParcelListItemUiModel(
+                        id = "parcel-3",
+                        trackingNumber = "POM-003",
+                        status = "Label created",
+                        lastCity = "Sofia",
+                        lastUpdatedText = "03 Apr 09:20"
+                    )
+                )
+            ),
+            onParcelClick = {}
+        )
+    }
+}
+
