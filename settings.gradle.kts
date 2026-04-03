@@ -24,4 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ParcelOnMap"
 include(":app")
+include(":ui")
+include(":data")
  

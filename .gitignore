@@ -10,6 +10,9 @@ local.properties
 .idea/navEditor.xml
 .idea/assetWizardSettings.xml
 
+.idea/gradle.xml
+.idea/deploymentTargetSelector.xml
+
 build
 captures
 .externalNativeBuild
