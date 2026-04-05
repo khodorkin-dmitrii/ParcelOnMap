@@ -12,9 +12,9 @@ class MockParcelRepository : ParcelRepository {
             trackingNumber = "POM-001",
             status = "In transit",
             routePoints = listOf(
-                ParcelRoutePoint("Los Angeles, USA", 34.0522, -118.2437, Instant.parse("2026-03-24T07:20:00Z")),
-                ParcelRoutePoint("Chicago, USA", 41.8781, -87.6298, Instant.parse("2026-03-25T15:45:00Z")),
-                ParcelRoutePoint("Frankfurt, Germany", 50.1109, 8.6821, Instant.parse("2026-03-27T08:10:00Z")),
+                ParcelRoutePoint("Lisbon, Portugal", 38.7223, -9.1393, Instant.parse("2026-03-24T07:20:00Z")),
+                ParcelRoutePoint("Madrid, Spain", 40.4168, -3.7038, Instant.parse("2026-03-25T15:45:00Z")),
+                ParcelRoutePoint("Milan, Italy", 45.4642, 9.1900, Instant.parse("2026-03-27T08:10:00Z")),
                 ParcelRoutePoint("Budapest, Hungary", 47.4979, 19.0402, Instant.parse("2026-03-28T13:30:00Z")),
                 ParcelRoutePoint("Belgrade, Serbia", 44.7866, 20.4489, Instant.parse("2026-03-29T09:15:00Z"))
             )
