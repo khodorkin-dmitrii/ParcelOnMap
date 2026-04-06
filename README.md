@@ -2,7 +2,7 @@
 
 <table>
   <tr>
-    <td valign="top" width="70%">
+    <td valign="top" width="55%">
       <h2>About the project</h2>
       <p><strong>Parcel On Map</strong> is an Android pet project focused on visualizing parcel delivery routes on map.</p>
       <p>The current version displays a list of mock parcels and lets the user open a details screen where the route is shown on a map with markers and an animated polyline.</p>
@@ -25,41 +25,46 @@
         <li>Basic unit tests for route ordering and ViewModel mapping logic</li>
       </ul>
     </td>
-    <td valign="top" width="30%">
+    <td valign="top" width="45%">
       <h2>🎥 Demo</h2>
       <a>
         <img src="./docs/demo.gif" alt="Parcel On Map demo" width="100%">
       </a>
     </td>
   </tr>
+  <tr>
+    <td valign="top" width="50%">
+      <h2>🧱 Project structure</h2>
+      <p>The project currently consists of three modules:</p>
+      <ul>
+        <li><code>:app</code> — app entry point, navigation, dependency wiring, ViewModels</li>
+        <li><code>:ui</code> — composables, theme, UI models</li>
+        <li><code>:data</code> — parcel models, repository contracts, mock data implementation</li>
+      </ul>
+      <p>The architecture is intentionally lightweight for now and is based on:</p>
+      <ul>
+        <li>repository pattern</li>
+        <li>manual dependency container</li>
+        <li>ViewModel → UI state mapping</li>
+        <li>single-activity Compose app structure</li>
+      </ul>
+    </td>
+    <td valign="top" width="50%">
+      <h2>🛠 Tech stack</h2>
+      <ul>
+        <li><strong>Kotlin</strong></li>
+        <li><strong>Jetpack Compose</strong></li>
+        <li><strong>Material 3</strong></li>
+        <li><strong>Navigation Compose</strong></li>
+        <li><strong>Android Lifecycle / ViewModel</strong></li>
+        <li><strong>Google Maps Compose</strong></li>
+        <li><strong>Google Play Services Maps</strong></li>
+        <li><strong>JUnit4</strong></li>
+        <li><strong>Gradle multi-module setup</strong></li>
+      </ul>
+    </td>
+  </tr>
 </table>
-
-## 🛠 Tech stack
-
-- **Kotlin**
-- **Jetpack Compose**
-- **Material 3**
-- **Navigation Compose**
-- **Android Lifecycle / ViewModel**
-- **Google Maps Compose**
-- **Google Play Services Maps**
-- **JUnit4**
-- **Gradle multi-module setup**
-
-## 🧱 Project structure
-
-The project currently consists of three modules:
-
-- `:app` — app entry point, navigation, dependency wiring, ViewModels
-- `:ui` — composables, theme, UI models
-- `:data` — parcel models, repository contracts, mock data implementation
-
-The architecture is intentionally lightweight for now and is based on:
-
-- repository pattern
-- manual dependency container
-- ViewModel → UI state mapping
-- single-activity Compose app structure
 
 ## 🚧 Project status
 
