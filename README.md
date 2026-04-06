@@ -17,22 +17,7 @@ I started this project as a practical way to explore and demonstrate:
 At the moment, the project should be treated as a **work-in-progress prototype** rather than a finished production app.
 
 ## 🎥 Demo
-
 https://drive.google.com/file/d/11dWPW8Tm1MQU5ZZqhvThxUhmkSqlDc4r/view?usp=sharing
-
-**Video demo:**  
-[Watch the demo](PASTE_YOUR_VIDEO_LINK_HERE)
-
-You can place here:
-- a YouTube link
-- a Loom link
-- a GIF preview
-- a screenshot thumbnail linked to the video
-
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
 
 ## ✨ Current functionality
 
