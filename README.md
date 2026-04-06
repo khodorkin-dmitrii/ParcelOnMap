@@ -17,7 +17,10 @@ I started this project as a practical way to explore and demonstrate:
 At the moment, the project should be treated as a **work-in-progress prototype** rather than a finished production app.
 
 ## 🎥 Demo
-https://drive.google.com/file/d/11dWPW8Tm1MQU5ZZqhvThxUhmkSqlDc4r/view?usp=sharing
+
+[![Watch Demo](https://img.shields.io/badge/Watch-Demo-blue?style=for-the-badge)](https://drive.google.com/file/d/11dWPW8Tm1MQU5ZZqhvThxUhmkSqlDc4r/view?usp=sharing)
+
+Direct link: [Google Drive video](https://drive.google.com/file/d/11dWPW8Tm1MQU5ZZqhvThxUhmkSqlDc4r/view?usp=sharing)
 
 ## ✨ Current functionality
 
