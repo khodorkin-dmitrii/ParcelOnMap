@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -79,17 +80,26 @@ private fun ParcelListItem(
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = parcel.status,
+                text = "From ${parcel.fromCity} - to ${parcel.destinationCity}",
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 text = "Last city: ${parcel.lastCity}",
                 style = MaterialTheme.typography.bodySmall
             )
-            Text(
-                text = "Updated: ${parcel.lastUpdatedText}",
-                style = MaterialTheme.typography.bodySmall
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = parcel.status,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Updated: ${parcel.lastUpdatedText}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
@@ -104,6 +114,8 @@ private fun ParcelListScreenPreview() {
                     ParcelListItemUiModel(
                         id = "parcel-1",
                         trackingNumber = "POM-001",
+                        fromCity = "Lisbon, Portugal",
+                        destinationCity = "Belgrade, Serbia",
                         status = "In transit",
                         lastCity = "Vienna",
                         lastUpdatedText = "03 Apr 18:40"
@@ -111,6 +123,8 @@ private fun ParcelListScreenPreview() {
                     ParcelListItemUiModel(
                         id = "parcel-2",
                         trackingNumber = "POM-002",
+                        fromCity = "New York, USA",
+                        destinationCity = "Belgrade, Serbia",
                         status = "Sorting center",
                         lastCity = "Brno",
                         lastUpdatedText = "03 Apr 14:15"
@@ -118,6 +132,8 @@ private fun ParcelListScreenPreview() {
                     ParcelListItemUiModel(
                         id = "parcel-3",
                         trackingNumber = "POM-003",
+                        fromCity = "Seattle, USA",
+                        destinationCity = "Belgrade, Serbia",
                         status = "Label created",
                         lastCity = "Sofia",
                         lastUpdatedText = "03 Apr 09:20"
@@ -128,4 +144,3 @@ private fun ParcelListScreenPreview() {
         )
     }
 }
-

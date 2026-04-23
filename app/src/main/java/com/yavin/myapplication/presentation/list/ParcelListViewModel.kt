@@ -21,11 +21,15 @@ class ParcelListViewModel(
     )
 
     private fun toUiModel(parcel: Parcel): ParcelListItemUiModel {
+        val sortedPoints = parcel.routePoints.sortedBy { it.timestamp }
+        val firstPoint = sortedPoints.firstOrNull()
         val lastPoint = parcel.routePoints.maxByOrNull { it.timestamp }
 
         return ParcelListItemUiModel(
             id = parcel.id,
             trackingNumber = parcel.trackingNumber,
+            fromCity = firstPoint?.cityName.orEmpty(),
+            destinationCity = lastPoint?.cityName.orEmpty(),
             status = parcel.status,
             lastCity = lastPoint?.cityName.orEmpty(),
             lastUpdatedText = lastPoint?.timestamp
