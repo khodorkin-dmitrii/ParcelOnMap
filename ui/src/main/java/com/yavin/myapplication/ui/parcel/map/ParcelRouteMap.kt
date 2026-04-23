@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -93,7 +94,10 @@ fun ParcelRouteMap(
         }
 
         if (animatedPath.size > 1) {
-            Polyline(points = animatedPath)
+            Polyline(
+                points = animatedPath,
+                geodesic = true
+            )
         }
     }
 }
@@ -103,8 +107,9 @@ private fun interpolateLatLng(
     end: LatLng,
     progress: Float
 ): LatLng {
-    val clampedProgress = progress.coerceIn(0f, 1f)
-    val latitude = start.latitude + (end.latitude - start.latitude) * clampedProgress
-    val longitude = start.longitude + (end.longitude - start.longitude) * clampedProgress
-    return LatLng(latitude, longitude)
+    return SphericalUtil.interpolate(
+        start,
+        end,
+        progress.coerceIn(0f, 1f).toDouble()
+    )
 }

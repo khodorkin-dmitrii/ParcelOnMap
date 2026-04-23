@@ -13,6 +13,7 @@ kotlin = "2.3.20"
 composeBom = "2026.03.01"
 mapsCompose = "8.2.2"
 playServicesMaps = "20.0.0"
+androidMapsUtils = "4.1.1"
 desugarJdkLibs = "2.1.5"
 
 [libraries]
@@ -35,6 +36,7 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+android-maps-utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "androidMapsUtils" }
 android-tools-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 [plugins]
