@@ -2,6 +2,10 @@
     <string name="app_name">Parcel On Map</string>
     <string name="parcels_title">Parcels</string>
     <string name="settings_title">Settings</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_system_default">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="add_parcel_title">Add parcel</string>
     <string name="tracking_number_label">Tracking number</string>
     <string name="screen_under_development_note">This screen is under development.</string>

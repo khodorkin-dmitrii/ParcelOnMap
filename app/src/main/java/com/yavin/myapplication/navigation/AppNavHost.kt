@@ -2,6 +2,7 @@ package com.yavin.myapplication.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,6 +12,7 @@ import androidx.navigation.navArgument
 import com.yavin.myapplication.di.AppContainer
 import com.yavin.myapplication.presentation.list.ParcelListViewModel
 import com.yavin.myapplication.presentation.map.ParcelMapViewModel
+import com.yavin.myapplication.presentation.settings.SettingsViewModel
 import com.yavin.myapplication.ui.parcel.create.CreateParcelScreen
 import com.yavin.myapplication.ui.parcel.list.ParcelListScreen
 import com.yavin.myapplication.ui.parcel.map.ParcelMapScreen
@@ -73,7 +75,14 @@ fun AppNavHost(
         }
 
         composable(route = AppRoute.Settings) {
+            val viewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModel.factory(appContainer.appSettingsRepository)
+            )
+            val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
             SettingsScreen(
+                themeMode = uiState.value.themeMode,
+                onThemeModeClick = viewModel::onThemeModeSelected,
                 onBackClick = { navController.popBackStack() }
             )
         }

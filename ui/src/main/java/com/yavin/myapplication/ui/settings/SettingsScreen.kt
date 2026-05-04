@@ -1,5 +1,6 @@
 package com.yavin.myapplication.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,12 +21,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
+import com.yavin.myapplication.ui.theme.AppThemeMode
+import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    themeMode: AppThemeMode,
+    onThemeModeClick: (AppThemeMode) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -48,28 +55,105 @@ fun SettingsScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(innerPadding),
         ) {
-            SettingsRow(
-                label = stringResource(R.string.map_provider_label),
-                value = stringResource(R.string.google_maps_value)
+            ThemeSettings(
+                themeMode = themeMode,
+                onThemeModeClick = onThemeModeClick
             )
-            SettingsRow(
-                label = stringResource(R.string.auto_sync_parcels_label),
-                value = stringResource(R.string.coming_soon_value)
+            AppInfo(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun ThemeSettings (
+    themeMode: AppThemeMode,
+    onThemeModeClick: (AppThemeMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.theme_title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            ThemeModeOption(
+                text = stringResource(R.string.theme_system_default),
+                selected = themeMode == AppThemeMode.System,
+                onClick = { onThemeModeClick(AppThemeMode.System) },
+                modifier = Modifier.weight(1f)
             )
-            SettingsRow(
-                label = stringResource(R.string.notifications_label),
-                value = stringResource(R.string.coming_soon_value)
+            ThemeModeOption(
+                text = stringResource(R.string.theme_light),
+                selected = themeMode == AppThemeMode.Light,
+                onClick = { onThemeModeClick(AppThemeMode.Light) },
+                modifier = Modifier.weight(1f)
             )
-            SettingsRow(
-                label = stringResource(R.string.app_version_label),
-                value = stringResource(R.string.app_version_value)
+            ThemeModeOption(
+                text = stringResource(R.string.theme_dark),
+                selected = themeMode == AppThemeMode.Dark,
+                onClick = { onThemeModeClick(AppThemeMode.Dark) },
+                modifier = Modifier.weight(1f)
             )
         }
+    }
+}
+
+@Composable
+private fun AppInfo (
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        SettingsRow(
+            label = stringResource(R.string.map_provider_label),
+            value = stringResource(R.string.google_maps_value)
+        )
+        SettingsRow(
+            label = stringResource(R.string.auto_sync_parcels_label),
+            value = stringResource(R.string.coming_soon_value)
+        )
+        SettingsRow(
+            label = stringResource(R.string.notifications_label),
+            value = stringResource(R.string.coming_soon_value)
+        )
+        SettingsRow(
+            label = stringResource(R.string.app_version_label),
+            value = stringResource(R.string.app_version_value)
+        )
+    }
+}
+
+@Composable
+private fun ThemeModeOption(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge
+        )
     }
 }
 
@@ -90,6 +174,18 @@ private fun SettingsRow(
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenPreview() {
+    ParcelOnMapTheme {
+        SettingsScreen(
+            themeMode = AppThemeMode.System,
+            onThemeModeClick = {},
+            onBackClick = {}
         )
     }
 }
