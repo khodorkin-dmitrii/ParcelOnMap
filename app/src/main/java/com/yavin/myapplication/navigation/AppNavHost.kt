@@ -11,8 +11,10 @@ import androidx.navigation.navArgument
 import com.yavin.myapplication.di.AppContainer
 import com.yavin.myapplication.presentation.list.ParcelListViewModel
 import com.yavin.myapplication.presentation.map.ParcelMapViewModel
+import com.yavin.myapplication.ui.parcel.create.CreateParcelScreen
 import com.yavin.myapplication.ui.parcel.list.ParcelListScreen
 import com.yavin.myapplication.ui.parcel.map.ParcelMapScreen
+import com.yavin.myapplication.ui.settings.SettingsScreen
 
 @Composable
 fun AppNavHost(
@@ -35,6 +37,12 @@ fun AppNavHost(
                 state = viewModel.uiState,
                 onParcelClick = { parcelId ->
                     navController.navigate(AppRoute.parcelMap(parcelId))
+                },
+                onSettingsClick = {
+                    navController.navigate(AppRoute.Settings)
+                },
+                onAddParcelClick = {
+                    navController.navigate(AppRoute.CreateParcel)
                 }
             )
         }
@@ -57,6 +65,21 @@ fun AppNavHost(
 
             ParcelMapScreen(
                 state = viewModel.uiState,
+                onBackClick = { navController.popBackStack() },
+                onSettingsClick = {
+                    navController.navigate(AppRoute.Settings)
+                }
+            )
+        }
+
+        composable(route = AppRoute.Settings) {
+            SettingsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = AppRoute.CreateParcel) {
+            CreateParcelScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }

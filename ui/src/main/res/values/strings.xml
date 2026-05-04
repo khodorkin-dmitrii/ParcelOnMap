@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Parcel On Map</string>
+    <string name="parcels_title">Parcels</string>
+    <string name="settings_title">Settings</string>
+    <string name="add_parcel_title">Add parcel</string>
+    <string name="tracking_number_label">Tracking number</string>
+    <string name="screen_under_development_note">This screen is under development.</string>
+    <string name="feature_not_implemented_message">Feature is not implemented yet.</string>
+    <string name="map_provider_label">Map provider</string>
+    <string name="google_maps_value">Google Maps</string>
+    <string name="auto_sync_parcels_label">Auto sync parcels</string>
+    <string name="notifications_label">Notifications</string>
+    <string name="coming_soon_value">Coming soon</string>
+    <string name="app_version_label">App version</string>
+    <string name="app_version_value">0.1.0</string>
+    <string name="back_content_description">Back</string>
+    <string name="settings_content_description">Settings</string>
+    <string name="add_parcel_content_description">Add parcel</string>
+    <string name="save_parcel_button">Save</string>
+</resources>

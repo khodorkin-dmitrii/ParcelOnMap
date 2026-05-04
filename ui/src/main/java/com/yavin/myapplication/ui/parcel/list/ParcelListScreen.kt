@@ -10,16 +10,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yavin.myapplication.ui.R
 import com.yavin.myapplication.ui.model.ParcelListItemUiModel
 import com.yavin.myapplication.ui.model.ParcelListUiState
 import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
@@ -29,6 +37,8 @@ import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 fun ParcelListScreen(
     state: ParcelListUiState,
     onParcelClick: (String) -> Unit,
+    onSettingsClick: () -> Unit,
+    onAddParcelClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -36,9 +46,25 @@ fun ParcelListScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Parcels")
+                    Text(text = stringResource(R.string.parcels_title))
+                },
+                actions = {
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.settings_content_description)
+                        )
+                    }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddParcelClick) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_parcel_content_description)
+                )
+            }
         }
     ) { innerPadding ->
         LazyColumn(
@@ -140,7 +166,9 @@ private fun ParcelListScreenPreview() {
                     )
                 )
             ),
-            onParcelClick = {}
+            onParcelClick = {},
+            onSettingsClick = {},
+            onAddParcelClick = {}
         )
     }
 }
