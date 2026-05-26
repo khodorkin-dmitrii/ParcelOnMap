@@ -79,6 +79,18 @@ class MockParcelRepository : ParcelRepository {
                 ParcelRoutePoint("Novi Sad, Serbia", 45.2671, 19.8335, Instant.parse("2026-03-22T15:05:00Z")),
                 ParcelRoutePoint("Belgrade, Serbia", 44.7866, 20.4489, Instant.parse("2026-03-22T18:45:00Z"))
             )
+        ),
+        Parcel(
+            id = "parcel-7",
+            trackingNumber = "POM-007",
+            status = "In transit",
+            routePoints = listOf(
+                ParcelRoutePoint("Warsaw, Poland", 52.2297, 21.0122, Instant.parse("2026-03-25T06:30:00Z")),
+                ParcelRoutePoint("Krakow, Poland", 50.0647, 19.9450, Instant.parse("2026-03-25T13:20:00Z")),
+                ParcelRoutePoint("Bratislava, Slovakia", 48.1486, 17.1077, Instant.parse("2026-03-26T09:10:00Z")),
+                ParcelRoutePoint("Zagreb, Croatia", 45.8150, 15.9819, Instant.parse("2026-03-27T07:55:00Z")),
+                ParcelRoutePoint("Belgrade, Serbia", 44.7866, 20.4489, Instant.parse("2026-03-27T16:25:00Z"))
+            )
         )
     )
 
