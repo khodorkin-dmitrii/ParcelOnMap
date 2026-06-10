@@ -1,16 +1,25 @@
 package com.yavin.myapplication.ui.parcel.map
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.PlayArrow
@@ -35,7 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
 import com.yavin.myapplication.ui.model.ParcelMapUiState
@@ -99,7 +110,6 @@ fun ParcelMapScreen(
 
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(innerPadding)
                     .padding(8.dp),
                 colors = CardDefaults.cardColors(
@@ -134,8 +144,8 @@ fun ParcelMapScreen(
                         }
                     },
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(24.dp),
+                        .align(Alignment.BottomEnd)
+                        .padding(vertical = 30.dp, horizontal = 64.dp),
                     containerColor = if (isRouteAnimationRunning) {
                         MaterialTheme.colorScheme.surfaceVariant
                     } else {
@@ -176,15 +186,65 @@ private fun RouteReplayDecorativeOverlay(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.33f),
+                .fillMaxHeight(0.26f),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                 contentColor = MaterialTheme.colorScheme.onSurface
             )
         ) {
-            Box(modifier = Modifier.fillMaxSize())
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                AnimatedPlane()
+            }
         }
     }
 }
 
+@Composable
+private fun AnimatedPlane(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "plane_floating_transition")
+
+    val offsetX by infiniteTransition.animateValue(
+        initialValue = (-8).dp,
+        targetValue = 8.dp,
+        typeConverter = Dp.VectorConverter,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = PlaneOffsetXDurationMillis,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "plane_offset_x"
+    )
+
+    val offsetY by infiniteTransition.animateValue(
+        initialValue = (-4).dp,
+        targetValue = 4.dp,
+        typeConverter = Dp.VectorConverter,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = PlaneOffsetYDurationMillis,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "plane_offset_y"
+    )
+
+    Image(
+        painter = painterResource(id = R.drawable.plane),
+        contentDescription = null,
+        modifier = modifier
+            .size(300.dp)
+            .offset(x = offsetX, y = offsetY)
+    )
+}
+
 private const val ReplayOverlayFadeDurationMillis = 1000
+private const val PlaneOffsetXDurationMillis = 2600
+private const val PlaneOffsetYDurationMillis = 3400
