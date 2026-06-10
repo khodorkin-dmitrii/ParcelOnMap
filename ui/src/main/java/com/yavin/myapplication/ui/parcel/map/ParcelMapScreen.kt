@@ -1,8 +1,13 @@
 package com.yavin.myapplication.ui.parcel.map
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -148,6 +153,38 @@ fun ParcelMapScreen(
                     )
                 }
             }
+
+            RouteReplayDecorativeOverlay(
+                visible = isRouteAnimationRunning && state.points.size > 1,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
 }
+
+@Composable
+private fun RouteReplayDecorativeOverlay(
+    visible: Boolean,
+    modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(animationSpec = tween(durationMillis = ReplayOverlayFadeDurationMillis)),
+        exit = fadeOut(animationSpec = tween(durationMillis = ReplayOverlayFadeDurationMillis)),
+        modifier = modifier
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.33f),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
+        ) {
+            Box(modifier = Modifier.fillMaxSize())
+        }
+    }
+}
+
+private const val ReplayOverlayFadeDurationMillis = 1000
