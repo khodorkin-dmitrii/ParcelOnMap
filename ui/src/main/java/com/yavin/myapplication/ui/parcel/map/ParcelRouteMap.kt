@@ -41,7 +41,7 @@ fun ParcelRouteMap(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             coordinates.last(),
-            RouteCameraZoom
+            calculateInitialCameraZoom(coordinates)
         )
     }
     val routePath = remember(coordinates, completedSegmentCount, segmentProgress.value, showFullRoute) {
@@ -81,7 +81,7 @@ fun ParcelRouteMap(
         cameraPositionState.move(
             CameraUpdateFactory.newLatLngZoom(
                 coordinates.last(),
-                RouteCameraZoom
+                calculateInitialCameraZoom(coordinates)
             )
         )
     }
@@ -97,23 +97,31 @@ fun ParcelRouteMap(
         showFullRoute = false
 
         try {
+            val initialReplayZoom = calculateRouteCameraZoom(
+                start = coordinates[0],
+                end = coordinates[1]
+            )
             cameraPositionState.animate(
                 update = CameraUpdateFactory.newLatLngZoom(
                     coordinates.first(),
-                    RouteCameraZoom
+                    initialReplayZoom
                 ),
                 durationMs = InitialCameraMoveDurationMillis
             )
 
             for (index in 0 until coordinates.lastIndex) {
                 segmentProgress.snapTo(0f)
+                val segmentZoom = calculateRouteCameraZoom(
+                    start = coordinates[index],
+                    end = coordinates[index + 1]
+                )
 
                 val cameraJob = launch {
                     delay(CameraSegmentStartDelayMillis)
                     cameraPositionState.animate(
                         update = CameraUpdateFactory.newLatLngZoom(
                             coordinates[index + 1],
-                            RouteCameraZoom
+                            segmentZoom
                         ),
                         durationMs = RouteSegmentAnimationDurationMillis -
                             CameraSegmentStartDelayMillis.toInt()
@@ -157,10 +165,45 @@ fun ParcelRouteMap(
     }
 }
 
-private const val RouteCameraZoom = 5f
+private const val SinglePointCameraZoom = 7f
+private const val MinRouteCameraZoom = 2f
+private const val MaxRouteCameraZoom = 12f
 private const val RouteSegmentAnimationDurationMillis = 3000
 private const val InitialCameraMoveDurationMillis = 1000
 private const val CameraSegmentStartDelayMillis = 200L
+
+private fun calculateInitialCameraZoom(
+    coordinates: List<LatLng>
+): Float {
+    return if (coordinates.size == 1) {
+        SinglePointCameraZoom
+    } else {
+        calculateRouteCameraZoom(
+            start = coordinates[coordinates.lastIndex - 1],
+            end = coordinates.last()
+        )
+    }
+}
+
+private fun calculateRouteCameraZoom(
+    start: LatLng,
+    end: LatLng
+): Float {
+    val distanceMeters = SphericalUtil.computeDistanceBetween(start, end)
+    val distanceKm = distanceMeters / 1000.0
+
+    return when {
+        distanceKm < 25 -> 12f
+        distanceKm < 75 -> 10f
+        distanceKm < 150 -> 7f
+        distanceKm < 300 -> 6.5f
+        distanceKm < 700 -> 5f
+        distanceKm < 1500 -> 4.5f
+        distanceKm < 3000 -> 4f
+        distanceKm < 6000 -> 2f
+        else -> 2f
+    }.coerceIn(MinRouteCameraZoom, MaxRouteCameraZoom)
+}
 
 private fun interpolateLatLng(
     start: LatLng,
