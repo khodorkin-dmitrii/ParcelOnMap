@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -37,6 +45,8 @@ fun ParcelMapScreen(
 ) {
     val topAppBarColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
     val topAppBarContentColor = MaterialTheme.colorScheme.onSurface
+    var playAnimationRequestId by remember(state.points) { mutableIntStateOf(0) }
+    var isRouteAnimationRunning by remember(state.points) { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -76,6 +86,8 @@ fun ParcelMapScreen(
             if (state.points.isNotEmpty()) {
                 ParcelRouteMap(
                     points = state.points,
+                    animationRequestId = playAnimationRequestId,
+                    onAnimationRunningChange = { isRouteAnimationRunning = it },
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -105,6 +117,35 @@ fun ParcelMapScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
+                }
+            }
+
+            if (state.points.size > 1) {
+                FloatingActionButton(
+                    onClick = {
+                        if (!isRouteAnimationRunning) {
+                            isRouteAnimationRunning = true
+                            playAnimationRequestId += 1
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(24.dp),
+                    containerColor = if (isRouteAnimationRunning) {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    } else {
+                        MaterialTheme.colorScheme.primaryContainer
+                    },
+                    contentColor = if (isRouteAnimationRunning) {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    } else {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = stringResource(R.string.play_route_animation_content_description)
+                    )
                 }
             }
         }

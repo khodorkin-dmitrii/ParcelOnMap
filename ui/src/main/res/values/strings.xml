@@ -20,5 +20,6 @@
     <string name="back_content_description">Back</string>
     <string name="settings_content_description">Settings</string>
     <string name="add_parcel_content_description">Add parcel</string>
+    <string name="play_route_animation_content_description">Play route animation</string>
     <string name="save_parcel_button">Save</string>
 </resources>

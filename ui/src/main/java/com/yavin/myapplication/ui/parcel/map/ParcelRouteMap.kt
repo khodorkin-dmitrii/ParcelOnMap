@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
@@ -19,47 +20,55 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ParcelRouteMap(
     points: List<ParcelMapPointUiModel>,
+    animationRequestId: Int,
+    onAnimationRunningChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (points.isEmpty()) {
         return
     }
 
-    val firstPoint = points.first()
     val coordinates = points.map { LatLng(it.latitude, it.longitude) }
     val segmentProgress = remember(points) { Animatable(0f) }
     var completedSegmentCount by remember(points) { mutableStateOf(0) }
+    var showFullRoute by remember(points) { mutableStateOf(true) }
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
-            LatLng(firstPoint.latitude, firstPoint.longitude),
-            5f
+            coordinates.last(),
+            RouteCameraZoom
         )
     }
-    val animatedPath = remember(coordinates, completedSegmentCount, segmentProgress.value) {
-        buildList {
-            add(coordinates.first())
+    val routePath = remember(coordinates, completedSegmentCount, segmentProgress.value, showFullRoute) {
+        if (showFullRoute) {
+            coordinates
+        } else {
+            buildList {
+                add(coordinates.first())
 
-            if (coordinates.size == 1) {
-                return@buildList
-            }
+                if (coordinates.size == 1) {
+                    return@buildList
+                }
 
-            repeat(completedSegmentCount.coerceAtMost(coordinates.lastIndex)) { index ->
-                add(coordinates[index + 1])
-            }
+                repeat(completedSegmentCount.coerceAtMost(coordinates.lastIndex)) { index ->
+                    add(coordinates[index + 1])
+                }
 
-            val currentSegmentStartIndex = completedSegmentCount
-            if (currentSegmentStartIndex < coordinates.lastIndex) {
-                add(
-                    interpolateLatLng(
-                        start = coordinates[currentSegmentStartIndex],
-                        end = coordinates[currentSegmentStartIndex + 1],
-                        progress = segmentProgress.value
+                val currentSegmentStartIndex = completedSegmentCount
+                if (currentSegmentStartIndex < coordinates.lastIndex) {
+                    add(
+                        interpolateLatLng(
+                            start = coordinates[currentSegmentStartIndex],
+                            end = coordinates[currentSegmentStartIndex + 1],
+                            progress = segmentProgress.value
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -67,17 +76,63 @@ fun ParcelRouteMap(
     LaunchedEffect(coordinates) {
         completedSegmentCount = 0
         segmentProgress.snapTo(0f)
-
-        for (index in 0 until coordinates.lastIndex) {
-            segmentProgress.snapTo(0f)
-            segmentProgress.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = 3000,
-                    easing = LinearEasing
-                )
+        showFullRoute = true
+        onAnimationRunningChange(false)
+        cameraPositionState.move(
+            CameraUpdateFactory.newLatLngZoom(
+                coordinates.last(),
+                RouteCameraZoom
             )
-            completedSegmentCount = index + 1
+        )
+    }
+
+    LaunchedEffect(animationRequestId, coordinates) {
+        if (animationRequestId == 0 || coordinates.size < 2) {
+            return@LaunchedEffect
+        }
+
+        onAnimationRunningChange(true)
+        completedSegmentCount = 0
+        segmentProgress.snapTo(0f)
+        showFullRoute = false
+
+        try {
+            cameraPositionState.animate(
+                update = CameraUpdateFactory.newLatLngZoom(
+                    coordinates.first(),
+                    RouteCameraZoom
+                ),
+                durationMs = InitialCameraMoveDurationMillis
+            )
+
+            for (index in 0 until coordinates.lastIndex) {
+                segmentProgress.snapTo(0f)
+
+                val cameraJob = launch {
+                    delay(CameraSegmentStartDelayMillis)
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newLatLngZoom(
+                            coordinates[index + 1],
+                            RouteCameraZoom
+                        ),
+                        durationMs = RouteSegmentAnimationDurationMillis -
+                            CameraSegmentStartDelayMillis.toInt()
+                    )
+                }
+
+                segmentProgress.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(
+                        durationMillis = RouteSegmentAnimationDurationMillis,
+                        easing = LinearEasing
+                    )
+                )
+                cameraJob.join()
+                completedSegmentCount = index + 1
+            }
+        } finally {
+            showFullRoute = true
+            onAnimationRunningChange(false)
         }
     }
 
@@ -93,14 +148,19 @@ fun ParcelRouteMap(
             )
         }
 
-        if (animatedPath.size > 1) {
+        if (routePath.size > 1) {
             Polyline(
-                points = animatedPath,
+                points = routePath,
                 geodesic = true
             )
         }
     }
 }
+
+private const val RouteCameraZoom = 5f
+private const val RouteSegmentAnimationDurationMillis = 3000
+private const val InitialCameraMoveDurationMillis = 1000
+private const val CameraSegmentStartDelayMillis = 200L
 
 private fun interpolateLatLng(
     start: LatLng,
