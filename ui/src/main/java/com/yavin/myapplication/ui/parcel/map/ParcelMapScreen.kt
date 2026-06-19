@@ -11,12 +11,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,13 +41,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
 import com.yavin.myapplication.ui.model.ParcelMapUiState
+import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -182,21 +187,24 @@ private fun RouteReplayDecorativeOverlay(
         exit = fadeOut(animationSpec = tween(durationMillis = ReplayOverlayFadeDurationMillis)),
         modifier = modifier
     ) {
-        Card(
+        val panelColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.26f),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
+                .fillMaxHeight(0.26f)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            0f to panelColor.copy(alpha = 0f),
+                            ReplayOverlayGradientFadeEnd to panelColor,
+                            1f to panelColor
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.BottomStart
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                AnimatedPlane()
-            }
+            AnimatedPlane(modifier = Modifier.padding(horizontal = 24.dp))
         }
     }
 }
@@ -239,11 +247,31 @@ private fun AnimatedPlane(
         painter = painterResource(id = R.drawable.plane),
         contentDescription = null,
         modifier = modifier
-            .size(300.dp)
+            .size(256.dp)
             .offset(x = offsetX, y = offsetY)
     )
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun RouteReplayDecorativeOverlayPreview() {
+    ParcelOnMapTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(360.dp)
+                .background(Color.DarkGray),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            RouteReplayDecorativeOverlay(
+                visible = true,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
+    }
+}
+
 private const val ReplayOverlayFadeDurationMillis = 1000
+private const val ReplayOverlayGradientFadeEnd = 0.15f
 private const val PlaneOffsetXDurationMillis = 2600
 private const val PlaneOffsetYDurationMillis = 3400
