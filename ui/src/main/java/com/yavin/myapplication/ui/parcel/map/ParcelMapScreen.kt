@@ -1,6 +1,7 @@
 package com.yavin.myapplication.ui.parcel.map
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
@@ -43,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +52,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
 import com.yavin.myapplication.ui.model.ParcelMapUiState
+import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
+import com.yavin.myapplication.ui.model.ParcelRouteReplayState
 import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,6 +174,7 @@ fun ParcelMapScreen(
 
             RouteReplayDecorativeOverlay(
                 visible = replayState.isRunning && state.points.size > 1,
+                isPlaneMirrored = replayState.isCurrentSegmentMovingEast(points = state.points),
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
@@ -179,6 +184,7 @@ fun ParcelMapScreen(
 @Composable
 private fun RouteReplayDecorativeOverlay(
     visible: Boolean,
+    isPlaneMirrored: Boolean,
     modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
@@ -192,7 +198,7 @@ private fun RouteReplayDecorativeOverlay(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.26f)
+                .fillMaxHeight(0.24f)
                 .background(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
@@ -204,13 +210,17 @@ private fun RouteReplayDecorativeOverlay(
                 ),
             contentAlignment = Alignment.BottomStart
         ) {
-            AnimatedPlane(modifier = Modifier.padding(horizontal = 24.dp))
+            AnimatedPlane(
+                isMirrored = isPlaneMirrored,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
         }
     }
 }
 
 @Composable
 private fun AnimatedPlane(
+    isMirrored: Boolean,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "plane_floating_transition")
@@ -243,13 +253,28 @@ private fun AnimatedPlane(
         label = "plane_offset_y"
     )
 
-    Image(
-        painter = painterResource(id = R.drawable.plane),
-        contentDescription = null,
+    Box(
         modifier = modifier
-            .size(256.dp)
-            .offset(x = offsetX, y = offsetY)
-    )
+            .size(200.dp)
+            .offset(x = offsetX, y = offsetY),
+        contentAlignment = Alignment.Center
+    ) {
+        Crossfade(
+            targetState = isMirrored,
+            animationSpec = tween(durationMillis = PlaneFlipFadeDurationMillis),
+            label = "plane_direction_crossfade"
+        ) { shouldMirrorPlane ->
+            Image(
+                painter = painterResource(id = R.drawable.plane),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = if (shouldMirrorPlane) -1f else 1f
+                    }
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -265,13 +290,30 @@ private fun RouteReplayDecorativeOverlayPreview() {
         ) {
             RouteReplayDecorativeOverlay(
                 visible = true,
+                isPlaneMirrored = true,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
     }
 }
 
+private fun ParcelRouteReplayState.isCurrentSegmentMovingEast(
+    points: List<ParcelMapPointUiModel>
+): Boolean {
+    val lastSegmentIndex = points.lastIndex - 1
+    if (lastSegmentIndex < 0) {
+        return false
+    }
+
+    val segmentIndex = currentSegmentIndex.coerceIn(0, lastSegmentIndex)
+    val segmentStart = points[segmentIndex]
+    val segmentEnd = points[segmentIndex + 1]
+
+    return segmentEnd.longitude > segmentStart.longitude
+}
+
 private const val ReplayOverlayFadeDurationMillis = 1000
 private const val ReplayOverlayGradientFadeEnd = 0.15f
+private const val PlaneFlipFadeDurationMillis = 500
 private const val PlaneOffsetXDurationMillis = 2600
 private const val PlaneOffsetYDurationMillis = 3400
