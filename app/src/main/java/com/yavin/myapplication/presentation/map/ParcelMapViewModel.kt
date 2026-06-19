@@ -2,10 +2,20 @@ package com.yavin.myapplication.presentation.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.repository.ParcelRepository
+import com.yavin.myapplication.ui.model.ParcelMapCameraState
 import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
 import com.yavin.myapplication.ui.model.ParcelMapUiState
+import com.yavin.myapplication.ui.model.ParcelRouteReplayPhase
+import com.yavin.myapplication.ui.model.ParcelRouteReplayState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -16,13 +26,17 @@ class ParcelMapViewModel(
 
     private val formatter = DateTimeFormatter.ofPattern("dd MMM HH:mm")
     private val zoneId = ZoneId.systemDefault()
+    private var routeReplayJob: Job? = null
 
-    val uiState = repository.getParcel(parcelId)?.let(::toUiState) ?: ParcelMapUiState(
+    private val initialUiState = repository.getParcel(parcelId)?.let(::toUiState) ?: ParcelMapUiState(
         trackingNumber = "Unknown parcel",
         status = "Not found",
         points = emptyList(),
         emptyMessage = "Parcel route is unavailable."
     )
+    private val _uiState = MutableStateFlow(initialUiState)
+
+    val uiState: StateFlow<ParcelMapUiState> = _uiState
 
     private fun toUiState(parcel: Parcel): ParcelMapUiState {
         val points = parcel.routePoints
@@ -44,6 +58,96 @@ class ParcelMapViewModel(
         )
     }
 
+    fun onRouteReplayClick() {
+        if (_uiState.value.replayState.isRunning || _uiState.value.points.size < 2) {
+            return
+        }
+
+        routeReplayJob?.cancel()
+        routeReplayJob = viewModelScope.launch {
+            startRouteReplay()
+        }
+    }
+
+    private suspend fun startRouteReplay() {
+        setReplayState(
+            ParcelRouteReplayState(
+                phase = ParcelRouteReplayPhase.MovingToStart,
+                showFullRoute = false
+            )
+        )
+        delay(InitialCameraMoveDurationMillis)
+
+        val segmentCount = _uiState.value.points.lastIndex
+        for (segmentIndex in 0 until segmentCount) {
+            runRouteSegment(segmentIndex)
+        }
+
+        setReplayState(
+            ParcelRouteReplayState(
+                phase = ParcelRouteReplayPhase.Finished,
+                currentSegmentIndex = segmentCount,
+                currentSegmentProgress = 1f,
+                showFullRoute = true
+            )
+        )
+    }
+
+    private suspend fun runRouteSegment(segmentIndex: Int) {
+        val startTimeNanos = System.nanoTime()
+
+        while (true) {
+            val elapsedMillis = (System.nanoTime() - startTimeNanos) / NanosInMillis
+            val progress = (elapsedMillis.toFloat() / RouteSegmentAnimationDurationMillis)
+                .coerceIn(0f, 1f)
+
+            setReplayState(
+                ParcelRouteReplayState(
+                    phase = ParcelRouteReplayPhase.DrawingRoute,
+                    currentSegmentIndex = segmentIndex,
+                    currentSegmentProgress = progress,
+                    showFullRoute = false
+                )
+            )
+
+            if (progress >= 1f) {
+                return
+            }
+
+            delay(RouteReplayFrameDelayMillis)
+        }
+    }
+
+    fun onCameraPositionChanged(
+        latitude: Double,
+        longitude: Double,
+        zoom: Float,
+        bearing: Float,
+        tilt: Float
+    ) {
+        val cameraState = ParcelMapCameraState(
+            latitude = latitude,
+            longitude = longitude,
+            zoom = zoom,
+            bearing = bearing,
+            tilt = tilt
+        )
+
+        _uiState.update { state ->
+            if (state.cameraState.isCloseTo(cameraState)) {
+                state
+            } else {
+                state.copy(cameraState = cameraState)
+            }
+        }
+    }
+
+    private fun setReplayState(replayState: ParcelRouteReplayState) {
+        _uiState.update { state ->
+            state.copy(replayState = replayState)
+        }
+    }
+
     companion object {
         fun factory(
             repository: ParcelRepository,
@@ -55,4 +159,23 @@ class ParcelMapViewModel(
             }
         }
     }
+}
+
+private const val RouteSegmentAnimationDurationMillis = 3000L
+private const val InitialCameraMoveDurationMillis = 1000L
+private const val RouteReplayFrameDelayMillis = 16L
+private const val NanosInMillis = 1_000_000L
+private const val CoordinateEpsilon = 0.000001
+private const val CameraFloatEpsilon = 0.01f
+
+private fun ParcelMapCameraState?.isCloseTo(other: ParcelMapCameraState): Boolean {
+    if (this == null) {
+        return false
+    }
+
+    return kotlin.math.abs(latitude - other.latitude) < CoordinateEpsilon &&
+        kotlin.math.abs(longitude - other.longitude) < CoordinateEpsilon &&
+        kotlin.math.abs(zoom - other.zoom) < CameraFloatEpsilon &&
+        kotlin.math.abs(bearing - other.bearing) < CameraFloatEpsilon &&
+        kotlin.math.abs(tilt - other.tilt) < CameraFloatEpsilon
 }

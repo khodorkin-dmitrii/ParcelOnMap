@@ -27,7 +27,7 @@ class ParcelMapViewModelTest {
             override fun getParcel(parcelId: String): Parcel? = parcel.takeIf { it.id == parcelId }
         }
 
-        val uiState = ParcelMapViewModel(repository, parcel.id).uiState
+        val uiState = ParcelMapViewModel(repository, parcel.id).uiState.value
 
         assertEquals(
             listOf("Los Angeles, USA", "Frankfurt, Germany", "Belgrade, Serbia"),

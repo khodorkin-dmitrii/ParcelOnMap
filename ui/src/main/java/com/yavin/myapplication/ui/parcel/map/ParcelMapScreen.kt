@@ -37,10 +37,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,14 +51,21 @@ import com.yavin.myapplication.ui.model.ParcelMapUiState
 @Composable
 fun ParcelMapScreen(
     state: ParcelMapUiState,
+    onRouteReplayClick: () -> Unit,
+    onCameraPositionChanged: (
+        latitude: Double,
+        longitude: Double,
+        zoom: Float,
+        bearing: Float,
+        tilt: Float
+    ) -> Unit,
     onBackClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val topAppBarColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
     val topAppBarContentColor = MaterialTheme.colorScheme.onSurface
-    var playAnimationRequestId by remember(state.points) { mutableIntStateOf(0) }
-    var isRouteAnimationRunning by remember(state.points) { mutableStateOf(false) }
+    val replayState = state.replayState
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -102,8 +105,9 @@ fun ParcelMapScreen(
             if (state.points.isNotEmpty()) {
                 ParcelRouteMap(
                     points = state.points,
-                    animationRequestId = playAnimationRequestId,
-                    onAnimationRunningChange = { isRouteAnimationRunning = it },
+                    replayState = replayState,
+                    cameraState = state.cameraState,
+                    onCameraPositionChanged = onCameraPositionChanged,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -137,21 +141,16 @@ fun ParcelMapScreen(
 
             if (state.points.size > 1) {
                 FloatingActionButton(
-                    onClick = {
-                        if (!isRouteAnimationRunning) {
-                            isRouteAnimationRunning = true
-                            playAnimationRequestId += 1
-                        }
-                    },
+                    onClick = onRouteReplayClick,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(vertical = 30.dp, horizontal = 64.dp),
-                    containerColor = if (isRouteAnimationRunning) {
+                    containerColor = if (replayState.isRunning) {
                         MaterialTheme.colorScheme.surfaceVariant
                     } else {
                         MaterialTheme.colorScheme.primaryContainer
                     },
-                    contentColor = if (isRouteAnimationRunning) {
+                    contentColor = if (replayState.isRunning) {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     } else {
                         MaterialTheme.colorScheme.onPrimaryContainer
@@ -165,7 +164,7 @@ fun ParcelMapScreen(
             }
 
             RouteReplayDecorativeOverlay(
-                visible = isRouteAnimationRunning && state.points.size > 1,
+                visible = replayState.isRunning && state.points.size > 1,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }

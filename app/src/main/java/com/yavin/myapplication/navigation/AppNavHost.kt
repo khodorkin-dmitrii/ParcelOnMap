@@ -64,9 +64,12 @@ fun AppNavHost(
                     parcelId = parcelId
                 )
             )
+            val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
             ParcelMapScreen(
-                state = viewModel.uiState,
+                state = uiState.value,
+                onRouteReplayClick = viewModel::onRouteReplayClick,
+                onCameraPositionChanged = viewModel::onCameraPositionChanged,
                 onBackClick = { navController.popBackStack() },
                 onSettingsClick = {
                     navController.navigate(AppRoute.Settings)
