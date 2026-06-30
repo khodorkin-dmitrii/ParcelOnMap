@@ -42,9 +42,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -175,7 +176,7 @@ fun ParcelMapScreen(
             RouteReplayDecorativeOverlay(
                 visible = replayState.isRunning && state.points.size > 1,
                 isPlaneMirrored = replayState.isCurrentSegmentMovingEast(points = state.points),
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier.align(Alignment.BottomStart)
             )
         }
     }
@@ -193,23 +194,21 @@ private fun RouteReplayDecorativeOverlay(
         exit = fadeOut(animationSpec = tween(durationMillis = ReplayOverlayFadeDurationMillis)),
         modifier = modifier
     ) {
-        val panelColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+        val panelColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f)
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.24f)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colorStops = arrayOf(
-                            0f to panelColor.copy(alpha = 0f),
-                            ReplayOverlayGradientFadeEnd to panelColor,
-                            1f to panelColor
-                        )
-                    )
-                ),
+                .fillMaxWidth(0.85f)
+                .fillMaxHeight(0.25f),
             contentAlignment = Alignment.BottomStart
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.radial_gradient_top_right),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+                colorFilter = ColorFilter.tint(panelColor)
+            )
             AnimatedPlane(
                 isMirrored = isPlaneMirrored,
                 modifier = Modifier.padding(horizontal = 24.dp)
@@ -313,7 +312,6 @@ private fun ParcelRouteReplayState.isCurrentSegmentMovingEast(
 }
 
 private const val ReplayOverlayFadeDurationMillis = 1000
-private const val ReplayOverlayGradientFadeEnd = 0.15f
 private const val PlaneFlipFadeDurationMillis = 500
 private const val PlaneOffsetXDurationMillis = 2600
 private const val PlaneOffsetYDurationMillis = 3400
