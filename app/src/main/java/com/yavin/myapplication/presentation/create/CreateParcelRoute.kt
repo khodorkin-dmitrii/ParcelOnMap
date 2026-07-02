@@ -1,23 +1,24 @@
-package com.yavin.myapplication.presentation.settings
+package com.yavin.myapplication.presentation.create
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yavin.myapplication.ui.settings.SettingsScreen
+import com.yavin.myapplication.ui.parcel.create.CreateParcelScreen
 
 @Composable
-fun SettingsRoute(
+fun CreateParcelRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: CreateParcelViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    SettingsScreen(
-        themeMode = uiState.themeMode,
-        onThemeModeClick = viewModel::onThemeModeSelected,
+    CreateParcelScreen(
+        state = uiState,
+        onTrackingNumberChange = viewModel::onTrackingNumberChanged,
+        onSaveClick = viewModel::onSaveClick,
         onBackClick = onBackClick,
         modifier = modifier
     )

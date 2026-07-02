@@ -2,17 +2,17 @@ package com.yavin.myapplication.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.yavin.myapplication.presentation.create.CreateParcelRoute
 import com.yavin.myapplication.presentation.list.ParcelListRoute
 import com.yavin.myapplication.presentation.map.ParcelMapViewModel
 import com.yavin.myapplication.presentation.settings.SettingsRoute
-import com.yavin.myapplication.ui.parcel.create.CreateParcelScreen
 import com.yavin.myapplication.ui.parcel.map.ParcelMapScreen
 
 @Composable
@@ -69,7 +69,7 @@ fun AppNavHost(
         }
 
         composable(route = AppRoute.CreateParcel) {
-            CreateParcelScreen(
+            CreateParcelRoute(
                 onBackClick = { navController.popBackStack() }
             )
         }

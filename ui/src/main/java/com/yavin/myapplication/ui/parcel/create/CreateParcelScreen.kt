@@ -13,38 +13,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
-import kotlinx.coroutines.launch
+import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateParcelScreen(
+    state: CreateParcelUiState,
+    onTrackingNumberChange: (String) -> Unit,
+    onSaveClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var trackingNumber by remember { mutableStateOf("") }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val notImplementedMessage = stringResource(R.string.feature_not_implemented_message)
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
         topBar = {
             TopAppBar(
                 title = {
@@ -71,8 +60,8 @@ fun CreateParcelScreen(
             Text(text = stringResource(R.string.screen_under_development_note))
 
             OutlinedTextField(
-                value = trackingNumber,
-                onValueChange = { trackingNumber = it },
+                value = state.trackingNumber,
+                onValueChange = onTrackingNumberChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = stringResource(R.string.tracking_number_label))
@@ -81,14 +70,53 @@ fun CreateParcelScreen(
             )
 
             Button(
-                onClick = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(notImplementedMessage)
-                    }
-                }
+                onClick = onSaveClick
             ) {
                 Text(text = stringResource(R.string.save_parcel_button))
             }
+
+            if (state.showNotImplementedMessage) {
+                Text(text = stringResource(R.string.feature_not_implemented_message))
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CreateParcelScreenEmptyPreview() {
+    ParcelOnMapTheme {
+        CreateParcelScreen(
+            state = CreateParcelPreviewData.empty,
+            onTrackingNumberChange = {},
+            onSaveClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CreateParcelScreenFilledPreview() {
+    ParcelOnMapTheme {
+        CreateParcelScreen(
+            state = CreateParcelPreviewData.filled,
+            onTrackingNumberChange = {},
+            onSaveClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CreateParcelScreenWithMessagePreview() {
+    ParcelOnMapTheme {
+        CreateParcelScreen(
+            state = CreateParcelPreviewData.withMessage,
+            onTrackingNumberChange = {},
+            onSaveClick = {},
+            onBackClick = {}
+        )
     }
 }
