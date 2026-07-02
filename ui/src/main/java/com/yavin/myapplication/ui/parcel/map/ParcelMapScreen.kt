@@ -1,5 +1,6 @@
 package com.yavin.myapplication.ui.parcel.map
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
@@ -52,9 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
-import com.yavin.myapplication.ui.model.ParcelMapUiState
-import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
-import com.yavin.myapplication.ui.model.ParcelRouteReplayState
 import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -278,7 +276,43 @@ private fun AnimatedPlane(
 
 @Preview(showBackground = true)
 @Composable
+private fun ParcelMapScreenPreview() {
+    ParcelOnMapTheme {
+        ParcelMapScreen(
+            state = ParcelMapPreviewData.notFound,
+            onRouteReplayClick = {},
+            onCameraPositionChanged = { _, _, _, _, _ -> },
+            onBackClick = {},
+            onSettingsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun RouteReplayDecorativeOverlayPreview() {
+    ParcelOnMapTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(360.dp)
+                .background(Color.DarkGray),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            RouteReplayDecorativeOverlay(
+                visible = true,
+                isPlaneMirrored = true,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+private fun RouteReplayDecorativeOverlayNightPreview() {
     ParcelOnMapTheme {
         Box(
             modifier = Modifier

@@ -18,10 +18,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.yavin.myapplication.ui.model.ParcelMapCameraState
-import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
-import com.yavin.myapplication.ui.model.ParcelRouteReplayPhase
-import com.yavin.myapplication.ui.model.ParcelRouteReplayState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.repository.ParcelRepository
-import com.yavin.myapplication.ui.model.ParcelMapCameraState
-import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
-import com.yavin.myapplication.ui.model.ParcelMapUiState
-import com.yavin.myapplication.ui.model.ParcelRouteReplayPhase
-import com.yavin.myapplication.ui.model.ParcelRouteReplayState
+import com.yavin.myapplication.ui.parcel.map.ParcelMapCameraState
+import com.yavin.myapplication.ui.parcel.map.ParcelMapPointUiModel
+import com.yavin.myapplication.ui.parcel.map.ParcelMapUiState
+import com.yavin.myapplication.ui.parcel.map.ParcelRouteReplayPhase
+import com.yavin.myapplication.ui.parcel.map.ParcelRouteReplayState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

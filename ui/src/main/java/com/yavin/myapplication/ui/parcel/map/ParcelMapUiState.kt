@@ -1,4 +1,4 @@
-package com.yavin.myapplication.ui.model
+package com.yavin.myapplication.ui.parcel.map
 
 data class ParcelMapUiState(
     val trackingNumber: String,
@@ -7,6 +7,13 @@ data class ParcelMapUiState(
     val emptyMessage: String,
     val replayState: ParcelRouteReplayState = ParcelRouteReplayState(),
     val cameraState: ParcelMapCameraState? = null
+)
+
+data class ParcelMapPointUiModel(
+    val title: String,
+    val latitude: Double,
+    val longitude: Double,
+    val timeLabel: String
 )
 
 data class ParcelMapCameraState(
