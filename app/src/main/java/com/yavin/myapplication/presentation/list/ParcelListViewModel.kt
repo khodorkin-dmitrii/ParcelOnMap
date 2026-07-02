@@ -1,15 +1,17 @@
 package com.yavin.myapplication.presentation.list
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.repository.ParcelRepository
 import com.yavin.myapplication.ui.model.ParcelListItemUiModel
 import com.yavin.myapplication.ui.model.ParcelListUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class ParcelListViewModel(
+@HiltViewModel
+class ParcelListViewModel @Inject constructor(
     repository: ParcelRepository
 ) : ViewModel() {
 
@@ -39,13 +41,4 @@ class ParcelListViewModel(
         )
     }
 
-    companion object {
-        fun factory(repository: ParcelRepository): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ParcelListViewModel(repository) as T
-                }
-            }
-    }
 }

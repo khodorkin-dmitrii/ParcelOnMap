@@ -1,7 +1,7 @@
 package com.yavin.myapplication.presentation.map
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.repository.ParcelRepository
@@ -10,6 +10,7 @@ import com.yavin.myapplication.ui.model.ParcelMapPointUiModel
 import com.yavin.myapplication.ui.model.ParcelMapUiState
 import com.yavin.myapplication.ui.model.ParcelRouteReplayPhase
 import com.yavin.myapplication.ui.model.ParcelRouteReplayState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,15 +19,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class ParcelMapViewModel(
+@HiltViewModel
+class ParcelMapViewModel @Inject constructor(
     repository: ParcelRepository,
-    parcelId: String
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val formatter = DateTimeFormatter.ofPattern("dd MMM HH:mm")
     private val zoneId = ZoneId.systemDefault()
     private var routeReplayJob: Job? = null
+    private val parcelId: String = checkNotNull(savedStateHandle[ParcelIdArg])
 
     private val initialUiState = repository.getParcel(parcelId)?.let(::toUiState) ?: ParcelMapUiState(
         trackingNumber = "Unknown parcel",
@@ -148,19 +152,9 @@ class ParcelMapViewModel(
         }
     }
 
-    companion object {
-        fun factory(
-            repository: ParcelRepository,
-            parcelId: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ParcelMapViewModel(repository, parcelId) as T
-            }
-        }
-    }
 }
 
+private const val ParcelIdArg = "parcelId"
 private const val RouteSegmentAnimationDurationMillis = 3000L
 private const val InitialCameraMoveDurationMillis = 1000L
 private const val RouteReplayFrameDelayMillis = 16L

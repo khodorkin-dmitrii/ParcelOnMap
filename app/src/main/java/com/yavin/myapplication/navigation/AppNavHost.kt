@@ -2,14 +2,13 @@ package com.yavin.myapplication.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yavin.myapplication.di.AppContainer
 import com.yavin.myapplication.presentation.list.ParcelListViewModel
 import com.yavin.myapplication.presentation.map.ParcelMapViewModel
 import com.yavin.myapplication.presentation.settings.SettingsViewModel
@@ -20,7 +19,6 @@ import com.yavin.myapplication.ui.settings.SettingsScreen
 
 @Composable
 fun AppNavHost(
-    appContainer: AppContainer,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -31,9 +29,7 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(route = AppRoute.ParcelList) {
-            val viewModel: ParcelListViewModel = viewModel(
-                factory = ParcelListViewModel.factory(appContainer.parcelRepository)
-            )
+            val viewModel: ParcelListViewModel = hiltViewModel()
 
             ParcelListScreen(
                 state = viewModel.uiState,
@@ -56,14 +52,8 @@ fun AppNavHost(
                     type = NavType.StringType
                 }
             )
-        ) { backStackEntry ->
-            val parcelId = backStackEntry.arguments?.getString(AppRoute.ParcelIdArg).orEmpty()
-            val viewModel: ParcelMapViewModel = viewModel(
-                factory = ParcelMapViewModel.factory(
-                    repository = appContainer.parcelRepository,
-                    parcelId = parcelId
-                )
-            )
+        ) {
+            val viewModel: ParcelMapViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
             ParcelMapScreen(
@@ -78,9 +68,7 @@ fun AppNavHost(
         }
 
         composable(route = AppRoute.Settings) {
-            val viewModel: SettingsViewModel = viewModel(
-                factory = SettingsViewModel.factory(appContainer.appSettingsRepository)
-            )
+            val viewModel: SettingsViewModel = hiltViewModel()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
             SettingsScreen(

@@ -1,5 +1,6 @@
 package com.yavin.myapplication.presentation.map
 
+import androidx.lifecycle.SavedStateHandle
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.model.ParcelRoutePoint
 import com.yavin.myapplication.data.repository.ParcelRepository
@@ -27,7 +28,8 @@ class ParcelMapViewModelTest {
             override fun getParcel(parcelId: String): Parcel? = parcel.takeIf { it.id == parcelId }
         }
 
-        val uiState = ParcelMapViewModel(repository, parcel.id).uiState.value
+        val savedStateHandle = SavedStateHandle(mapOf("parcelId" to parcel.id))
+        val uiState = ParcelMapViewModel(repository, savedStateHandle).uiState.value
 
         assertEquals(
             listOf("Los Angeles, USA", "Frankfurt, Germany", "Belgrade, Serbia"),
