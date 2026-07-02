@@ -1,4 +1,4 @@
-package com.yavin.myapplication.ui.model
+package com.yavin.myapplication.ui.parcel.list
 
 data class ParcelListItemUiModel(
     val id: String,

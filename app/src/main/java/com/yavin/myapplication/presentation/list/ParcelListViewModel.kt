@@ -3,8 +3,8 @@ package com.yavin.myapplication.presentation.list
 import androidx.lifecycle.ViewModel
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.repository.ParcelRepository
-import com.yavin.myapplication.ui.model.ParcelListItemUiModel
-import com.yavin.myapplication.ui.model.ParcelListUiState
+import com.yavin.myapplication.ui.parcel.list.ParcelListItemUiModel
+import com.yavin.myapplication.ui.parcel.list.ParcelListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

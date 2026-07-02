@@ -28,8 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yavin.myapplication.ui.R
-import com.yavin.myapplication.ui.model.ParcelListItemUiModel
-import com.yavin.myapplication.ui.model.ParcelListUiState
 import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,37 +133,7 @@ private fun ParcelListItem(
 private fun ParcelListScreenPreview() {
     ParcelOnMapTheme {
         ParcelListScreen(
-            state = ParcelListUiState(
-                parcels = listOf(
-                    ParcelListItemUiModel(
-                        id = "parcel-1",
-                        trackingNumber = "POM-001",
-                        fromCity = "Lisbon, Portugal",
-                        destinationCity = "Belgrade, Serbia",
-                        status = "In transit",
-                        lastCity = "Vienna",
-                        lastUpdatedText = "03 Apr 18:40"
-                    ),
-                    ParcelListItemUiModel(
-                        id = "parcel-2",
-                        trackingNumber = "POM-002",
-                        fromCity = "New York, USA",
-                        destinationCity = "Belgrade, Serbia",
-                        status = "Sorting center",
-                        lastCity = "Brno",
-                        lastUpdatedText = "03 Apr 14:15"
-                    ),
-                    ParcelListItemUiModel(
-                        id = "parcel-3",
-                        trackingNumber = "POM-003",
-                        fromCity = "Seattle, USA",
-                        destinationCity = "Belgrade, Serbia",
-                        status = "Label created",
-                        lastCity = "Sofia",
-                        lastUpdatedText = "03 Apr 09:20"
-                    )
-                )
-            ),
+            state = ParcelListPreviewData.content,
             onParcelClick = {},
             onSettingsClick = {},
             onAddParcelClick = {}

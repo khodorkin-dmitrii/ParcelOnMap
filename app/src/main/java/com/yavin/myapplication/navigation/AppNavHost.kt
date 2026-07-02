@@ -9,11 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.yavin.myapplication.presentation.list.ParcelListViewModel
+import com.yavin.myapplication.presentation.list.ParcelListRoute
 import com.yavin.myapplication.presentation.map.ParcelMapViewModel
 import com.yavin.myapplication.presentation.settings.SettingsViewModel
 import com.yavin.myapplication.ui.parcel.create.CreateParcelScreen
-import com.yavin.myapplication.ui.parcel.list.ParcelListScreen
 import com.yavin.myapplication.ui.parcel.map.ParcelMapScreen
 import com.yavin.myapplication.ui.settings.SettingsScreen
 
@@ -29,10 +28,7 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(route = AppRoute.ParcelList) {
-            val viewModel: ParcelListViewModel = hiltViewModel()
-
-            ParcelListScreen(
-                state = viewModel.uiState,
+            ParcelListRoute(
                 onParcelClick = { parcelId ->
                     navController.navigate(AppRoute.parcelMap(parcelId))
                 },
