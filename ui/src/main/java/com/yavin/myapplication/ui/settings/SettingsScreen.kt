@@ -183,7 +183,31 @@ private fun SettingsRow(
 private fun SettingsScreenPreview() {
     ParcelOnMapTheme {
         SettingsScreen(
-            themeMode = AppThemeMode.System,
+            themeMode = SettingsPreviewData.system.themeMode,
+            onThemeModeClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenLightPreview() {
+    ParcelOnMapTheme {
+        SettingsScreen(
+            themeMode = SettingsPreviewData.light.themeMode,
+            onThemeModeClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenDarkPreview() {
+    ParcelOnMapTheme {
+        SettingsScreen(
+            themeMode = SettingsPreviewData.dark.themeMode,
             onThemeModeClick = {},
             onBackClick = {}
         )

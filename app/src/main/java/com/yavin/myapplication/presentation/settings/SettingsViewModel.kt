@@ -3,6 +3,7 @@ package com.yavin.myapplication.presentation.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yavin.myapplication.data.settings.AppSettingsRepository
+import com.yavin.myapplication.ui.settings.SettingsUiState
 import com.yavin.myapplication.ui.theme.AppThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +33,3 @@ class SettingsViewModel @Inject constructor(
     }
 
 }
-
-data class SettingsUiState(
-    val themeMode: AppThemeMode = AppThemeMode.System
-)

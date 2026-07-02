@@ -1,5 +1,6 @@
 package com.yavin.myapplication.ui.parcel.list
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -131,6 +132,21 @@ private fun ParcelListItem(
 @Preview(showBackground = true)
 @Composable
 private fun ParcelListScreenPreview() {
+    ParcelOnMapTheme {
+        ParcelListScreen(
+            state = ParcelListPreviewData.content,
+            onParcelClick = {},
+            onSettingsClick = {},
+            onAddParcelClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+private fun ParcelListScreenNightPreview() {
     ParcelOnMapTheme {
         ParcelListScreen(
             state = ParcelListPreviewData.content,
