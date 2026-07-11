@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZoneId
@@ -32,18 +33,40 @@ class ParcelMapViewModel @Inject constructor(
     private var routeReplayJob: Job? = null
     private val parcelId: String = checkNotNull(savedStateHandle[ParcelIdArg])
 
-    private val initialUiState = repository.getParcel(parcelId)?.let(::toUiState) ?: ParcelMapUiState(
-        trackingNumber = "Unknown parcel",
-        status = "Not found",
-        points = emptyList(),
-        emptyMessage = "Parcel route is unavailable."
+    private val _uiState = MutableStateFlow(
+        ParcelMapUiState(
+            trackingNumber = "Loading",
+            status = "Loading",
+            points = emptyList(),
+            emptyMessage = "Loading parcel route..."
+        )
     )
-    private val _uiState = MutableStateFlow(initialUiState)
 
-    val uiState: StateFlow<ParcelMapUiState> = _uiState
+    val uiState: StateFlow<ParcelMapUiState> = _uiState.asStateFlow()
 
-    private fun toUiState(parcel: Parcel): ParcelMapUiState {
-        val points = parcel.routePoints
+    init {
+        viewModelScope.launch {
+            repository.observeParcel(parcelId).collect { parcel ->
+                _uiState.update { state ->
+                    parcel?.toUiState(
+                        replayState = state.replayState,
+                        cameraState = state.cameraState
+                    ) ?: state.copy(
+                        trackingNumber = "Unknown parcel",
+                        status = "Not found",
+                        points = emptyList(),
+                        emptyMessage = "Parcel route is unavailable."
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Parcel.toUiState(
+        replayState: ParcelRouteReplayState,
+        cameraState: ParcelMapCameraState?
+    ): ParcelMapUiState {
+        val points = routePoints
             .sortedBy { it.timestamp }
             .map { point ->
                 ParcelMapPointUiModel(
@@ -55,10 +78,12 @@ class ParcelMapViewModel @Inject constructor(
             }
 
         return ParcelMapUiState(
-            trackingNumber = parcel.trackingNumber,
-            status = parcel.status,
+            trackingNumber = trackingNumber,
+            status = status,
             points = points,
-            emptyMessage = "No route points available."
+            emptyMessage = "No route points available.",
+            replayState = replayState,
+            cameraState = cameraState
         )
     }
 

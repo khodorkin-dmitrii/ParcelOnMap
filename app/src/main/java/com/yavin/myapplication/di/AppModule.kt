@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.yavin.myapplication.data.repository.MockParcelRepository
+import androidx.room.Room
+import com.yavin.myapplication.data.local.ParcelDao
+import com.yavin.myapplication.data.local.ParcelDatabase
 import com.yavin.myapplication.data.repository.ParcelRepository
+import com.yavin.myapplication.data.repository.RoomParcelRepository
+import com.yavin.myapplication.data.sample.ParcelMockDataFactory
 import com.yavin.myapplication.data.settings.AppSettingsRepository
 import dagger.Module
 import dagger.Provides
@@ -22,7 +26,28 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideParcelRepository(): ParcelRepository = MockParcelRepository()
+    fun provideParcelDatabase(
+        @ApplicationContext context: Context
+    ): ParcelDatabase = Room.databaseBuilder(
+        context,
+        ParcelDatabase::class.java,
+        "parcel_on_map.db"
+    ).build()
+
+    @Provides
+    fun provideParcelDao(
+        database: ParcelDatabase
+    ): ParcelDao = database.parcelDao()
+
+    @Provides
+    @Singleton
+    fun provideParcelRepository(
+        parcelDao: ParcelDao
+    ): ParcelRepository = RoomParcelRepository(parcelDao)
+
+    @Provides
+    @Singleton
+    fun provideParcelMockDataFactory(): ParcelMockDataFactory = ParcelMockDataFactory()
 
     @Provides
     @Singleton

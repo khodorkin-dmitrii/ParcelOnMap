@@ -1,12 +1,12 @@
-package com.yavin.myapplication.data.repository
+package com.yavin.myapplication.data.sample
 
 import com.yavin.myapplication.data.model.Parcel
 import com.yavin.myapplication.data.model.ParcelRoutePoint
 import java.time.Instant
 
-class MockParcelRepository : ParcelRepository {
+class ParcelMockDataFactory {
 
-    private val parcels = listOf(
+    fun createParcels(): List<Parcel> = listOf(
         Parcel(
             id = "parcel-1",
             trackingNumber = "POM-001",
@@ -93,8 +93,4 @@ class MockParcelRepository : ParcelRepository {
             )
         )
     )
-
-    override fun getParcels(): List<Parcel> = parcels
-
-    override fun getParcel(parcelId: String): Parcel? = parcels.firstOrNull { it.id == parcelId }
 }

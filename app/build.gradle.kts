@@ -68,6 +68,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material3)
     implementation(libs.hilt.android)
     add("kapt", libs.hilt.compiler)
     add("kapt", libs.kotlin.metadata.jvm)
@@ -81,5 +84,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     coreLibraryDesugaring(libs.android.tools.desugar.jdk.libs)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 

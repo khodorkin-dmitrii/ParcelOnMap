@@ -4,9 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -31,7 +36,10 @@ import com.yavin.myapplication.ui.theme.ParcelOnMapTheme
 @Composable
 fun SettingsScreen(
     themeMode: AppThemeMode,
+    isSampleDataImporting: Boolean,
+    snackbarHostState: SnackbarHostState,
     onThemeModeClick: (AppThemeMode) -> Unit,
+    onLoadSampleDataClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -51,7 +59,8 @@ fun SettingsScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -61,9 +70,51 @@ fun SettingsScreen(
                 themeMode = themeMode,
                 onThemeModeClick = onThemeModeClick
             )
+            SampleDataSettings(
+                isImporting = isSampleDataImporting,
+                onLoadSampleDataClick = onLoadSampleDataClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
             AppInfo(modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun SampleDataSettings(
+    isImporting: Boolean,
+    onLoadSampleDataClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.sample_data_title),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Text(
+            text = stringResource(R.string.sample_data_description),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Button(
+            onClick = onLoadSampleDataClick,
+            enabled = !isImporting
+        ) {
+            if (isImporting) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .size(18.dp),
+                    strokeWidth = 2.dp
+                )
+            }
+            Text(text = stringResource(R.string.load_sample_data_button))
         }
     }
 }
@@ -184,7 +235,10 @@ private fun SettingsScreenPreview() {
     ParcelOnMapTheme {
         SettingsScreen(
             themeMode = SettingsPreviewData.system.themeMode,
+            isSampleDataImporting = SettingsPreviewData.system.isSampleDataImporting,
+            snackbarHostState = SnackbarHostState(),
             onThemeModeClick = {},
+            onLoadSampleDataClick = {},
             onBackClick = {}
         )
     }
@@ -196,7 +250,10 @@ private fun SettingsScreenLightPreview() {
     ParcelOnMapTheme {
         SettingsScreen(
             themeMode = SettingsPreviewData.light.themeMode,
+            isSampleDataImporting = SettingsPreviewData.light.isSampleDataImporting,
+            snackbarHostState = SnackbarHostState(),
             onThemeModeClick = {},
+            onLoadSampleDataClick = {},
             onBackClick = {}
         )
     }
@@ -208,7 +265,10 @@ private fun SettingsScreenDarkPreview() {
     ParcelOnMapTheme {
         SettingsScreen(
             themeMode = SettingsPreviewData.dark.themeMode,
+            isSampleDataImporting = SettingsPreviewData.dark.isSampleDataImporting,
+            snackbarHostState = SnackbarHostState(),
             onThemeModeClick = {},
+            onLoadSampleDataClick = {},
             onBackClick = {}
         )
     }

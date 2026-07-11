@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Parcel On Map</string>
     <string name="parcels_title">Parcels</string>
+    <string name="empty_parcels_title">No parcels yet</string>
+    <string name="empty_parcels_message">Load sample data from Settings to explore the app.</string>
     <string name="settings_title">Settings</string>
     <string name="theme_title">Theme</string>
     <string name="theme_system_default">System default</string>
@@ -10,6 +12,11 @@
     <string name="tracking_number_label">Tracking number</string>
     <string name="screen_under_development_note">This screen is under development.</string>
     <string name="feature_not_implemented_message">Feature is not implemented yet.</string>
+    <string name="sample_data_title">Sample data</string>
+    <string name="sample_data_description">Populate the local database with sample parcels. Existing local parcel data will be replaced.</string>
+    <string name="load_sample_data_button">Load sample data</string>
+    <string name="sample_data_loaded_message">Sample parcels loaded.</string>
+    <string name="sample_data_load_failed_message">Could not load sample parcels.</string>
     <string name="map_provider_label">Map provider</string>
     <string name="google_maps_value">Google Maps</string>
     <string name="auto_sync_parcels_label">Auto sync parcels</string>

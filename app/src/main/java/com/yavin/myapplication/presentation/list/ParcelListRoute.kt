@@ -1,8 +1,10 @@
 package com.yavin.myapplication.presentation.list
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yavin.myapplication.ui.parcel.list.ParcelListScreen
 
 @Composable
@@ -13,8 +15,10 @@ fun ParcelListRoute(
     modifier: Modifier = Modifier,
     viewModel: ParcelListViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     ParcelListScreen(
-        state = viewModel.uiState,
+        state = uiState,
         onParcelClick = onParcelClick,
         onSettingsClick = onSettingsClick,
         onAddParcelClick = onAddParcelClick,
