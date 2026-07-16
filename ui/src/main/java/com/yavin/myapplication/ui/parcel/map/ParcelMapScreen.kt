@@ -43,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
@@ -192,7 +193,7 @@ private fun RouteReplayDecorativeOverlay(
         exit = fadeOut(animationSpec = tween(durationMillis = ReplayOverlayFadeDurationMillis)),
         modifier = modifier
     ) {
-        val panelColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f)
+        val panelColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
 
         Box(
             modifier = Modifier
