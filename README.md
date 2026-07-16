@@ -28,7 +28,7 @@
     <td valign="top" width="45%">
       <h2>🎥 Demo</h2>
       <a>
-        <img src="./docs/demo.mp4" alt="Parcel On Map demo" width="100%">
+        <img src="./docs/demo.gif" alt="Parcel On Map demo" width="100%">
       </a>
     </td>
   </tr>
@@ -76,11 +76,11 @@ Right now it already demonstrates the core flow:
 
 ## 📍 Roadmap / TODO
 
-- [ ] Replace mock data with a real data source
+- [x] Replace mock data with a real data source
 - [ ] Improve loading, error, and refresh handling
-- [ ] Improve map UX and camera fitting
+- [x] Improve map UX and camera fitting
 - [ ] Add search, filtering, or grouping for parcels
-- [ ] Introduce a proper DI solution
+- [x] Introduce a proper DI solution
 - [ ] Expand test coverage
 - [ ] Clean up package naming and local configuration
 - [ ] Polish the UI for a stronger demo experience
