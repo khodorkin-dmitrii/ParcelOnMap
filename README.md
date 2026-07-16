@@ -28,7 +28,7 @@
     <td valign="top" width="45%">
       <h2>🎥 Demo</h2>
       <a>
-        <img src="./docs/demo.gif" alt="Parcel On Map demo" width="100%">
+        <img src="./docs/demo.mp4" alt="Parcel On Map demo" width="100%">
       </a>
     </td>
   </tr>
