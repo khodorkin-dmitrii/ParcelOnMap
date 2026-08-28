@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yavin.myapplication.data"
+    namespace = "com.yavin.parcelonmap.data"
     compileSdk = 36
 
     defaultConfig {
